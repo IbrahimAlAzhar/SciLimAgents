@@ -1,0 +1,45 @@
+#!/bin/bash
+#PBS -N llama_sft
+#PBS -l walltime=90:00:00
+#PBS -l select=1:ncpus=8:mpiprocs=1:ngpus=1:mem=64gb
+#PBS -o other_experiments/sft/output.txt
+#PBS -e other_experiments/sft/error.txt
+#PBS -m abe
+
+cd "$PBS_O_WORKDIR"
+
+echo "Starting Qwen2.5-3B GRPO training job"
+echo "Current directory: $(pwd)"
+date
+
+# Activate conda env
+source activate image_lim
+
+# CUDA / PyTorch memory settings
+export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
+export CUDA_VISIBLE_DEVICES=0
+
+# Optional: reduce tokenizer parallelism warnings
+export TOKENIZERS_PARALLELISM=false
+
+echo "=== Environment Check ==="
+which python
+python --version
+nvidia-smi
+echo "GPU Memory before training:"
+nvidia-smi --query-gpu=name,memory.used,memory.free,memory.total --format=csv
+
+# Optional HF token if needed
+export HUGGING_FACE_HUB_TOKEN=''
+
+# Optional cache dirs
+export HF_HOME=hf_cache
+export TRANSFORMERS_CACHE=hf_cache
+export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
+
+echo "=== Starting training ==="
+python other_experiments/sft/sft_train.py
+
+echo "=== Training completed ==="
+date
+nvidia-smi  

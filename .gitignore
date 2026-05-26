@@ -1,0 +1,28 @@
+# Runtime logs
+*.log
+output.txt
+error.txt
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.env
+.env.*
+
+# No JSON/JSONL data or metadata in the public repo (regenerate locally)
+*.json
+*.jsonl
+!**/*.ipynb
+
+# Model checkpoints and training artifacts
+*.safetensors
+*.pt
+*.bin
+optimizer.pt
+training_args.bin
+trainer_state.json
+adapter_config.json
+vocab.json
+tokenizer.json
+merges.txt
+*.pkl
+*.pickle
